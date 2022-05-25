@@ -51,3 +51,23 @@ std::array<double, 7> franka_IK_EE_CC ( std::array<double, 16> O_T_EE_array,
 Different from `franka_IK_EE()`, this function only returns the solution belonging to the same "case" as the actual joint configuration `q_actual_array` (see the paper for details). The purpose is to prevent unexpected switching between different solution cases (e.g. elbow-up and -down) during continuous motion planning.
 
 Note that both functions assume that Franka Hand is installed and the solution is regarding to the end effector frame. If the Cartesian pose of the flange frame is to be used as input, according to [Franka documentation](https://frankaemika.github.io/docs/control_parameters.html#denavithartenberg-parameters) you can change the const variable `d7e` to 0.107 and remove the 45 degree offset in q7.
+
+
+
+###### MODIFIED BY TASBOLAT
+Run this to build the code
+```
+c++ -O3 -Wall -shared -std=c++11 -I/home/tasbolat/some_python_examples/GRASP/franka_analytical_ik/Eigen -fPIC $(python -m pybind11 --includes) franka_ik_pybind.cpp -o franka_ik_pybind$(python3-config --extension-suffix)
+```
+
+
+### TROUBLESHOOTING
+if 
+```
+fatal error: Eigen/Core: No such file or directory
+```
+then change to 
+```
+# include <eigen3/Eigen/Core>
+```
+reference: [check github issue](https://github.com/opencv/opencv/issues/14868)

@@ -54,20 +54,35 @@ Note that both functions assume that Franka Hand is installed and the solution i
 
 
 
-###### MODIFIED BY TASBOLAT
+###### MODIFIED for GraspFlow
 Run this to build the code
 ```
-c++ -O3 -Wall -shared -std=c++11 -I/home/tasbolat/some_python_examples/GRASP/franka_analytical_ik/Eigen -fPIC $(python -m pybind11 --includes) franka_ik_pybind.cpp -o franka_ik_pybind$(python3-config --extension-suffix)
+c++ -O3 -Wall -shared -std=c++11 -I../franka_analytical_ik/Eigen -fPIC $(python -m pybind11 --includes) franka_ik_pybind.cpp -o franka_ik_pybind$(python3-config --extension-suffix)
+```
+
+### Test:
+To test wether cpps are compiled correctly, please run:
+```
+python test.py
+```
+If the output is true, then it's successfully compiled.
+
+### Usage:
+Copy any *.so files into the necessary directories to use it as a third party library. For GraspFlow case copy the files to
+```
+cp *.so ../pytorch_6dof-graspnet/
+cp *.so ../graspflow/
 ```
 
 
 ### TROUBLESHOOTING
-if 
+In case 
 ```
 fatal error: Eigen/Core: No such file or directory
 ```
-then change to 
+this measn pybind is using eigen3, append eigen3 directory in pybind11/include/pybind11/eigen.h:
 ```
 # include <eigen3/Eigen/Core>
 ```
 reference: [check github issue](https://github.com/opencv/opencv/issues/14868)
+

@@ -70,8 +70,8 @@ def check_reachability(quaternion, translation, max_iterations=10):
             #print(jointPositionAnalytical)
             if check_limits(jointPositionAnalytical) and check_limits(jointPositionAnalytical_fake):
                 # check fake target
-                print(jointPositionAnalytical)
-                print(jointPositionAnalytical_fake)
+                # print(jointPositionAnalytical)
+                # print(jointPositionAnalytical_fake)
                 return True
 
             #print(jointPositionAnalytical)
@@ -79,13 +79,13 @@ def check_reachability(quaternion, translation, max_iterations=10):
     return False
 
 
-# translation = np.array([0.5344186663627625,  0.06687421351671219, 0.3184833526611328])
-# quaternion = np.array([ 0.4859273373217348, 0.8214059952365719, -0.22271585683462522, -0.19890817214796522]) # xyzw
+translation = np.array([0.5344186663627625,  0.06687421351671219, 0.3184833526611328])
+quaternion = np.array([ 0.4859273373217348, 0.8214059952365719, -0.22271585683462522, -0.19890817214796522]) # xyzw
 # translation = np.array([0.5588969230651855,  0.0063073597848415375, 0.2631653845310211])
 # quaternion = np.array([-0.5149032426188047, 0.7359848969492421, 0.31914526066961735, -0.302236967949614]) # xyzw
 
-translation = np.array([0.4459571838378906,  -0.006933244876563549, 0.28426724672317505])
-quaternion = np.array([ 0.755987501127552, 0.06571591799503634, 0.6469619546460547, 0.07486351248469168]) # xyzw
+# translation = np.array([0.4459571838378906,  -0.006933244876563549, 0.28426724672317505])
+# quaternion = np.array([ 0.755987501127552, 0.06571591799503634, 0.6469619546460547, 0.07486351248469168]) # xyzw
 
 
 print(check_reachability(translation=translation, quaternion=quaternion, max_iterations=10))

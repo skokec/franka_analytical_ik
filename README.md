@@ -53,26 +53,40 @@ Different from `franka_IK_EE()`, this function only returns the solution belongi
 Note that both functions assume that Franka Hand is installed and the solution is regarding to the end effector frame. If the Cartesian pose of the flange frame is to be used as input, according to [Franka documentation](https://frankaemika.github.io/docs/control_parameters.html#denavithartenberg-parameters) you can change the const variable `d7e` to 0.107 and remove the 45 degree offset in q7.
 
 
+## Python package installation
 
-###### MODIFIED for GraspFlow
-Run this to build the code
+Install as a pip package:
+
 ```
-c++ -O3 -Wall -shared -std=c++11 -I../franka_analytical_ik/Eigen -fPIC $(python -m pybind11 --includes) franka_ik_pybind.cpp -o franka_ik_pybind$(python3-config --extension-suffix)
+pip install git+https://github.com/skokec/franka_analytical_ik.git
+```
+
+### Usage:
+
+```python
+translation = np.array([0.5344186663627625,  0.06687421351671219, 0.3184833526611328])
+quaternion = np.array([ 0.4859273373217348, 0.8214059952365719, -0.22271585683462522, -0.19890817214796522]) # xyzw
+
+q7 = -1.7444444444444445
+initialJointPosition = np.array([-0.00034485234427340453, -0.7847331501140928,
+                                -0.00048777872079729497, -2.3551600892113274,
+                                -0.0009046530319716893, 1.5725385250250496,
+                                q7])
+
+jointPositionAnalytical = franka_ik.franka_IK(translation, quaternion, 
+                                              q7, initialJointPosition)
+
+print(jointPositionAnalytical)
 ```
 
 ### Test:
-To test wether cpps are compiled correctly, please run:
+To test wether cpps are compiled correctly, please install `numpy` and `scipy` and run:
 ```
-python test.py
+python -m unittest discover tests
 ```
 If the output is true, then it's successfully compiled.
 
-### Usage:
-Copy any *.so files into the necessary directories to use it as a third party library. For GraspFlow case copy the files to
-```
-cp *.so ../pytorch_6dof-graspnet/
-cp *.so ../graspflow/
-```
+
 
 
 ### TROUBLESHOOTING

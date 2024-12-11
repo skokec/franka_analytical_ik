@@ -1,5 +1,7 @@
+import unittest
+import franka_ik
+
 import numpy as np
-import franka_ik_pybind
 from scipy.spatial.transform import Rotation as R
 
 
@@ -34,7 +36,7 @@ def check_limits(joint_angles, q_min_epsilon=0.2, q_max_epsilon=0.2):
             return True
     return False
 
-def check_reachability(quaternion, translation, max_iterations=10):
+def check_reachability(quaternion, translation, max_iterations=10, do_print=False):
     '''
     quaternion: [4]
     translation: [3]
@@ -56,58 +58,54 @@ def check_reachability(quaternion, translation, max_iterations=10):
                                         -0.0009046530319716893, 1.5725385250250496,
                                         q7])
 
-        jointPositionAnalytical = franka_ik_pybind.franka_IK(
+        jointPositionAnalytical = franka_ik.franka_IK(
                     translation, quaternion, 
                     q7, initialJointPosition)
 
-        jointPositionAnalytical_fake = franka_ik_pybind.franka_IK(
+        jointPositionAnalytical_fake = franka_ik.franka_IK(
                     fake_translation.astype(np.float64), quaternion, 
                     q7, initialJointPosition)
 
         checker = np.sum(np.isnan(np.sum(jointPositionAnalytical, axis=1)))
         checker_fake = np.sum(np.isnan(np.sum(jointPositionAnalytical_fake, axis=1)))
         if (checker < 4) and (checker_fake < 4):
-            #print(jointPositionAnalytical)
+            if do_print:
+                print(jointPositionAnalytical)
             if check_limits(jointPositionAnalytical) and check_limits(jointPositionAnalytical_fake):
-                # check fake target
-                # print(jointPositionAnalytical)
-                # print(jointPositionAnalytical_fake)
+                
+                if do_print:
+                    # check fake target
+                    print(jointPositionAnalytical)
+                    print(jointPositionAnalytical_fake)
                 return True
 
-            #print(jointPositionAnalytical)
+            if do_print:
+                print(jointPositionAnalytical)
         
     return False
 
+class TestFrankaIK(unittest.TestCase):
+    def test_franka_IK(self):
+        translation = np.array([0.5344186663627625,  0.06687421351671219, 0.3184833526611328])
+        quaternion = np.array([ 0.4859273373217348, 0.8214059952365719, -0.22271585683462522, -0.19890817214796522]) # xyzw
 
-translation = np.array([0.5344186663627625,  0.06687421351671219, 0.3184833526611328])
-quaternion = np.array([ 0.4859273373217348, 0.8214059952365719, -0.22271585683462522, -0.19890817214796522]) # xyzw
-# translation = np.array([0.5588969230651855,  0.0063073597848415375, 0.2631653845310211])
-# quaternion = np.array([-0.5149032426188047, 0.7359848969492421, 0.31914526066961735, -0.302236967949614]) # xyzw
+        print(check_reachability(translation=translation, quaternion=quaternion, max_iterations=10, do_print=True))
 
-# translation = np.array([0.4459571838378906,  -0.006933244876563549, 0.28426724672317505])
-# quaternion = np.array([ 0.755987501127552, 0.06571591799503634, 0.6469619546460547, 0.07486351248469168]) # xyzw
+        translation = np.array([0.5588969230651855,  0.0063073597848415375, 0.2631653845310211])
+        quaternion = np.array([-0.5149032426188047, 0.7359848969492421, 0.31914526066961735, -0.302236967949614]) # xyzw
 
+        print(check_reachability(translation=translation, quaternion=quaternion, max_iterations=10, do_print=True))
 
-print(check_reachability(translation=translation, quaternion=quaternion, max_iterations=10))
+        translation = np.array([0.4459571838378906,  -0.006933244876563549, 0.28426724672317505])
+        quaternion = np.array([ 0.755987501127552, 0.06571591799503634, 0.6469619546460547, 0.07486351248469168]) # xyzw
 
-# angles = np.linspace(-3.14, 3.14, 1000)#[-1.7444444444444445]#np.linspace(-3.14, 3.14, 10)
-# for angle in angles:
-
-#     q7 = angle
-#     #print(q7)
-
-#     initialJointPosition = np.array([-0.00034485234427340453, -0.7847331501140928,
-#                                     -0.00048777872079729497, -2.3551600892113274,
-#                                     -0.0009046530319716893, 1.5725385250250496,
-#                                     q7   ])
+        print(check_reachability(translation=translation, quaternion=quaternion, max_iterations=10, do_print=True))
 
 
-#     jointPositionAnalytical = franka_ik_pybind.franka_IK(
-#                 translation, quaternion, 
-#                 q7, initialJointPosition)
 
+    def test_franka_IKCC(self):
+        # Add tests for franka_IKCC
+        pass
 
-#     checker = np.sum(np.isnan(np.sum(jointPositionAnalytical, axis=1)))
-#     if checker < 4:
-#         print("Found!")
-#         print(jointPositionAnalytical)
+if __name__ == '__main__':
+    unittest.main()
